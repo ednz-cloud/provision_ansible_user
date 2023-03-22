@@ -1,2 +1,4 @@
 ---
 # task/main file for provision_ansible_user
+- name: "Import create_user.yml"
+  ansible.builtin.include_tasks: create_user.yml
