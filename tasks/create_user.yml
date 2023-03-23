@@ -1,2 +1,10 @@
 ---
 # task/create_user file for provision_ansible_user
+- name: "Create user {{ provision_ansible_user_name }}"
+  ansible.builtin.user:
+    name: "{{ provision_ansible_user_name }}"
+    comment: "Ansible service user"
+    password: "{{ provision_ansible_user_password }}"
+    shell: "{{ provision_ansible_user_shell }}"
+    system: "{{ provision_ansible_user_is_system }}"
+    create_home: true
