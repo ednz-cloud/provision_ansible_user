@@ -5,4 +5,6 @@ provision_ansible_user_password: supersecretpassword
 provision_ansible_user_is_system: true
 provision_ansible_user_shell: /bin/bash
 provision_ansible_user_sudoer: false
-provision_ansible_user_ssh_keys: []
+provision_ansible_user_ssh_key:
+provision_ansible_user_ssh_key_options: ""
+provision_ansible_user_ssh_key_exclusive: true
