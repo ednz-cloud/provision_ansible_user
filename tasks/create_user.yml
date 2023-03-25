@@ -14,10 +14,4 @@
     dest: "/etc/sudoers.d/{{ provision_ansible_user_name }}"
     mode: 0640
     content: "{{ provision_ansible_user_name }}  ALL=(ALL)  NOPASSWD: ALL"
-
-- name: "Add key to authorized_keys"
-  user: "{{ provision_ansible_user_name }}"
-  key: "{{ provision_ansible_user_ssh_key }}"
-  comment: "ansible@{{ ansible_hostname }}"
-  key_options: "{{ provision_ansible_user_ssh_key_options }}"
-  exclusive: "{{ provision_ansible_user_ssh_key_exclusive }}"
+  when: provision_ansible_user_sudoer

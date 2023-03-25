@@ -1,0 +1,10 @@
+---
+provision_ansible_user_name: ansible
+provision_ansible_user_password: supersecretpassword
+provision_ansible_user_is_system: true
+provision_ansible_user_shell: /bin/bash
+provision_ansible_user_sudoer: true
+provision_ansible_user_add_ssh_key: true
+provision_ansible_user_ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF17FFrBY4dZyvJ7Yf1Ev4NA2+/tW5krKxVrpq45Cujg lanson@lead"
+provision_ansible_user_ssh_key_options: ""
+provision_ansible_user_ssh_key_exclusive: true
