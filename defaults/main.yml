@@ -1,8 +1,10 @@
 ---
 # defaults file for provision_ansible_user
 provision_ansible_user_name: ansible
+provision_ansible_user_group: ansible
 provision_ansible_user_password: "*"
 provision_ansible_user_is_system: true
+provision_ansible_user_home: /opt/{{ provision_ansible_user_name }}
 provision_ansible_user_shell: /bin/bash
 provision_ansible_user_sudoer: false
 provision_ansible_user_add_ssh_key: false

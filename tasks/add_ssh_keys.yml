@@ -4,6 +4,6 @@
   ansible.posix.authorized_key:
     user: "{{ provision_ansible_user_name }}"
     key: "{{ provision_ansible_user_ssh_key }}"
-    comment: "ansible@{{ ansible_hostname }}"
+    comment: "{{ provision_ansible_user_name }}@{{ ansible_hostname }}"
     key_options: "{{ provision_ansible_user_ssh_key_options }}"
     exclusive: "{{ provision_ansible_user_ssh_key_exclusive }}"
