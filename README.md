@@ -108,6 +108,7 @@ Including an example of how to use your role (for instance, with variables passe
       ansible.builtin.file:
         path: "/tmp/id_ed25519_{{ ansible_hostname }}"
         state: absent
+      delegate_to: localhost
 
     - name: "Provision ansible user"
       ansible.builtin.include_role:
