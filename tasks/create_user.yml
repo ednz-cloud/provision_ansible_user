@@ -1,5 +1,6 @@
 ---
 # task/create_user file for provision_ansible_user
+- name: "Create group {{ provision_ansible_user_group }}"
 - name: "Create user {{ provision_ansible_user_name }}"
   ansible.builtin.user:
     name: "{{ provision_ansible_user_name }}"
