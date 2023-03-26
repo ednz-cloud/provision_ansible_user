@@ -1,8 +1,8 @@
-DNS resolver conf
+Provision ansible user
 =========
 > This repository is only a mirror. Development and testing is done on a private gitlab server.
 
-This role configures dns resolvers on **debian-based** distributions.
+This role configures the ansible service user on **debian-based** distributions.
 
 Requirements
 ------------
@@ -14,39 +14,59 @@ Role Variables
 Available variables are listed below, along with default values. A sample file for the default values is available in `default/dns_resolver_conf.yml.sample` in case you need it for any `group_vars` or `host_vars` configuration.
 
 ```yaml
-dns_resolv_conf_disable_resolvectl: false # by default, set to false
+provision_ansible_user_name: ansible # by default, set to ansible
 ```
-This variable determines if systemd-resolved should be kept enabled/started or not. On some systems, like dns servers, it can interfere with the actual server, and disabling it might be a good idea.
+This variable sets the name to configure for the service account.
 
 ```yaml
-dns_resolv_conf_path: '/etc'
+provision_ansible_user_group: ansible # by default, set to ansible
 ```
-This variable defines the path where the resolv.conf fie should be copied.
+This variable sets the primary group to configure for the service account.
 
 ```yaml
-dns_resolv_conf_nameservers: []
+provision_ansible_user_password: "*" # by default, set to *
 ```
-This variable is the list of nameservers to configure on the host.
+This variable sets the password of the account, by default, it is set to "*", which means password authentication is disabled.
 
 ```yaml
-dns_resolv_conf_domain: ""
+provision_ansible_user_is_system: true # by default, set to true
 ```
-This variable sets the domain field in resolv.conf.
+This variable describe wether the account should be a system user or not. Default (and recommended) is `true`.
 
 ```yaml
-dns_resolv_conf_search: []
+provision_ansible_user_home: /opt/{{ provision_ansible_user_name }} # by default, set to /opt/{{ provision_ansible_user_name }}
 ```
-This variable is a list of all the search domains. Ideally, only one of `dns_resolv_conf_domain` or `dns_resolv_conf_search` should be specified. The other should be left untouched.
+This variable sets the home for the service account. By default the home of the account is set in /opt/.
 
 ```yaml
-dns_resolv_conf_sortlist: []
+provision_ansible_user_shell: /bin/bash # by default, set to /bin/bash
 ```
-This variable sets the sortlist option for resolv.conf. This option is a bit obsolete, and is here only for completeness of the config.
+This variable sets the shell to be used by the account. Defaults to bash.
 
 ```yaml
-dns_resolv_conf_options: []
+provision_ansible_user_sudoer: false # by default, set to false
 ```
-This variable sets the options to pass in resolv.conf, like `rotate`, etc...
+This variable defines if the user should be root. For security reasons, this defaults to `false`, but should probably be `true` in a real world scenario.
+
+```yaml
+provision_ansible_user_add_ssh_key: false # by default, set to false
+```
+This variable defines if ssh_keys should be added to the authroized_keys file for the user. Defaults to `false` because there is no "default" ssh_key. This should be set to true and a key passed to the role.
+
+```yaml
+provision_ansible_user_ssh_key: # by default, not set
+```
+This variable contains the ssh public key to use by ansible to log in the service account. Defaults to `None`, but should be set by the operator, and preferably obfuscated (see examples).
+
+```yaml
+provision_ansible_user_ssh_key_options: "" # by default, set to ""
+```
+This variable sets the potential ssh options to add in the authorized_keys file. Default to no options.
+
+```yaml
+provision_ansible_user_ssh_key_exclusive: true # by default, set to true
+```
+This variable defines if the ssh public key passed above should be the only key to log into this account. For security reasons, it is recommended that this gets set to `true`.
 
 Dependencies
 ------------
@@ -61,7 +81,40 @@ Including an example of how to use your role (for instance, with variables passe
 # calling the role inside a playbook with either the default or group_vars/host_vars
 - hosts: servers
   roles:
-    - ednxzu.dns_resolver_conf
+    - ednxzu.provision_ansible_user
+```
+
+```yaml
+# calling the role inside a playbook with just-in-time provisioning of the ssh public key, and vault storage
+- hosts: servers
+  tasks:
+    - name: "Generate a keypair for {{ ansible_hostname }}"
+      community.crypto.openssh_keypair:
+        path: "/tmp/id_ed25519_{{ ansible_hostname }}"
+        type: ed25519
+      delegate_to: localhost
+      register: _keypair
+
+    - name: "Write the private and public key to vault"
+      community.hashi_vault.vault_write:
+        path: "ansible/ssh_logins/{{ ansible_hostname }}"
+        data:
+          data:
+            private_key: "{{ lookup('ansible.builtin.file', '/tmp//tmp/id_ed25519_' ~ ansible_hostname ) }}"
+            public_key: "{{ _keypair.public_key }}"
+      delegate_to: localhost
+
+    - name: "Remove private_key files"
+      ansible.builtin.file:
+        path: "/tmp/id_ed25519_{{ ansible_hostname }}"
+        state: absent
+
+    - name: "Provision ansible user"
+      ansible.builtin.include_role:
+        name: ednxzu.provision_ansible_user
+      vars:
+        provision_ansible_user_add_ssh_key: true
+        provision_ansible_user_ssh_key: "{{ _keypair.public_key }}"
 ```
 
 License
