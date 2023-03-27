@@ -9,7 +9,7 @@ def test_hosts_file(host):
     assert etc_hosts.group == "root"
 
 def test_ansible_user_group(host):
-    """Validate consul user and group."""
+    """Validate ansible user and group."""
     ansible_group = host.group("ansible")
     ansible_user = host.user("ansible")
     assert ansible_group.exists
