@@ -11,7 +11,7 @@ None.
 
 Role Variables
 --------------
-Available variables are listed below, along with default values. A sample file for the default values is available in `default/dns_resolver_conf.yml.sample` in case you need it for any `group_vars` or `host_vars` configuration.
+Available variables are listed below, along with default values. A sample file for the default values is available in `default/provision_ansible_user.yml.sample` in case you need it for any `group_vars` or `host_vars` configuration.
 
 ```yaml
 provision_ansible_user_name: ansible # by default, set to ansible
