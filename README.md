@@ -31,7 +31,7 @@ This variable sets the password of the account, by default, it is set to "*", wh
 ```yaml
 provision_ansible_user_is_system: true # by default, set to true
 ```
-This variable describe wether the account should be a system user or not. Default (and recommended) is `true`.
+This variable describe whether the account should be a system user or not. Default (and recommended) is `true`.
 
 ```yaml
 provision_ansible_user_home: /opt/{{ provision_ansible_user_name }} # by default, set to /opt/{{ provision_ansible_user_name }}
@@ -76,7 +76,6 @@ None.
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 ```yaml
 # calling the role inside a playbook with either the default or group_vars/host_vars
 - hosts: servers
