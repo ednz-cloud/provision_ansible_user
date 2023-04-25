@@ -87,27 +87,32 @@ Example Playbook
 # calling the role inside a playbook with just-in-time provisioning of the ssh public key, and vault storage
 - hosts: servers
   tasks:
-    - name: "Generate a keypair for {{ ansible_hostname }}"
-      community.crypto.openssh_keypair:
-        path: "/tmp/id_ed25519_{{ ansible_hostname }}"
-        type: ed25519
+    - name: "Dynamic ssh keys generation"
       delegate_to: localhost
-      register: _keypair
+      block:
+        - name: "Generate a keypair for {{ ansible_hostname }}"
+          community.crypto.openssh_keypair:
+            path: "/tmp/id_ed25519_{{ ansible_hostname }}"
+            type: ed25519
+            owner: root
+            group: root
+          delegate_to: localhost
+          register: _keypair
 
-    - name: "Write the private and public key to vault"
-      community.hashi_vault.vault_write:
-        path: "ansible/ssh_logins/{{ ansible_hostname }}"
-        data:
-          data:
-            private_key: "{{ lookup('ansible.builtin.file', '/tmp//tmp/id_ed25519_' ~ ansible_hostname ) }}"
-            public_key: "{{ _keypair.public_key }}"
-      delegate_to: localhost
+        - name: "Write the private and public key to vault"
+          community.hashi_vault.vault_write:
+            url: https://vault.domain.tld
+            path: "ansible/hosts/{{ inventory_hostname }}"
+            data:
+              private_key: "{{ lookup('ansible.builtin.file', '/tmp/id_ed25519_' ~ ansible_hostname ) }}\n"
+              public_key: "{{ _keypair.public_key }}"
+          delegate_to: localhost
 
-    - name: "Remove private_key files"
-      ansible.builtin.file:
-        path: "/tmp/id_ed25519_{{ ansible_hostname }}"
-        state: absent
-      delegate_to: localhost
+        - name: "Remove private_key files"
+          ansible.builtin.file:
+            path: "/tmp/id_ed25519_{{ ansible_hostname }}"
+            state: absent
+          delegate_to: localhost
 
     - name: "Provision ansible user"
       ansible.builtin.include_role:
