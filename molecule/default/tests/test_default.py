@@ -22,7 +22,6 @@ def test_ansible_sudoer(host):
     etc_sudoers_d_ansible = host.file("/etc/sudoers.d/ansible")
     assert not etc_sudoers_d_ansible.exists
 
-
 def test_ansible_no_ssh(host):
     """Validate that ansible user has no authorized_keys"""
     opt_ansible_authorized_keys = host.file("/opt/ansible/.ssh/authorized_keys")
