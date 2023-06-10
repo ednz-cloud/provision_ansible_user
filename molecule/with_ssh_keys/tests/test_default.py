@@ -24,7 +24,7 @@ def test_ansible_sudoer(host):
     assert etc_sudoers_d_ansible.user == "root"
     assert etc_sudoers_d_ansible.group == "root"
     assert etc_sudoers_d_ansible.mode == 0o440
-    assert etc_sudoers_d_ansible.contains("ansible  ALL=(ALL)  NOPASSWD: ALL")
+    assert etc_sudoers_d_ansible.contains("ansible ALL=NOPASSWD:SETENV: ALL")
 
 def test_ansible_ssh_authorized_keys(host):
     """Validate that ansible user has authorized_keys"""
