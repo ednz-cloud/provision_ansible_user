@@ -1,6 +1,6 @@
-Provision ansible user
+provision_ansible_user
 =========
-> This repository is only a mirror. Development and testing is done on a private gitlab server.
+> This repository is only a mirror. Development and testing is done on a private gitea server.
 
 This role configures the ansible service user on **debian-based** distributions.
 

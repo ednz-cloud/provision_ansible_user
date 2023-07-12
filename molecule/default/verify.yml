@@ -1,0 +1,67 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: "Test: file /etc/hosts"
+      block:
+        - name: "Stat file /etc/hosts"
+          ansible.builtin.stat:
+            path: "/etc/hosts"
+          register: stat_etc_hosts
+
+        - name: "Verify file /etc/hosts"
+          ansible.builtin.assert:
+            that:
+              - stat_etc_hosts.stat.exists
+              - stat_etc_hosts.stat.isreg
+              - stat_etc_hosts.stat.pw_name == 'root'
+              - stat_etc_hosts.stat.gr_name == 'root'
+
+    - name: "Test: ansible user and group"
+      block:
+        - name: "Getent user ansible"
+          ansible.builtin.getent:
+            database: passwd
+            key: deploy
+          register: ansible_user
+
+        - name: "Getent group consul"
+          ansible.builtin.getent:
+            database: group
+            key: deploy
+          register: ansible_group
+
+        - name: "Verify ansible user and group"
+          ansible.builtin.assert:
+            that:
+              - not ansible_user.failed
+              - not ansible_group.failed
+              - "'deploy' in ansible_user.ansible_facts.getent_passwd.keys()"
+              - "'/opt/deploy' in ansible_user.ansible_facts.getent_passwd['deploy']"
+              - "'/bin/bash' in ansible_user.ansible_facts.getent_passwd['deploy']"
+              - "'deploy' in ansible_group.ansible_facts.getent_group.keys()"
+
+    - name: "Test: ansible sudo permissions"
+      block:
+        - name: "Stat file /etc/sudoers.d/deploy"
+          ansible.builtin.stat:
+            path: "/etc/sudoers.d"
+          register: stat_etc_sudoers_d_ansible
+
+        - name: "Verify file /etc/sudoers.d/deploy"
+          ansible.builtin.assert:
+            that:
+              - not stat_etc_sudoers_d_ansible.stat.exists
+
+    - name: "Test: ansible authorized_keys"
+      block:
+        - name: "Stat file /opt/deploy/.ssh/authorized_keys"
+          ansible.builtin.stat:
+            path: "/opt/deploy/.ssh/authorized_keys"
+          register: stat_opt_ansible_ssh_authorized_keys
+
+        - name: "Verify file /opt/deploy/.ssh/authorized_keys"
+          ansible.builtin.assert:
+            that:
+              - not stat_opt_ansible_ssh_authorized_keys.stat.exists
