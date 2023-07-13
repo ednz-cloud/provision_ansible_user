@@ -26,7 +26,7 @@
             key: deploy
           register: ansible_user
 
-        - name: "Getent group consul"
+        - name: "Getent group ansible"
           ansible.builtin.getent:
             database: group
             key: deploy
