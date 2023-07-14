@@ -1,3 +1,0 @@
----
-provision_ansible_user_name: deploy
-provision_ansible_user_group: deploy

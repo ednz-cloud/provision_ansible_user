@@ -1,6 +1,6 @@
 ---
-provision_ansible_user_name: deploy
-provision_ansible_user_group: deploy
+provision_ansible_user_name: ansible
+provision_ansible_user_group: ansible
 provision_ansible_user_password: "*"
 provision_ansible_user_is_system: true
 provision_ansible_user_home: /opt/{{ provision_ansible_user_name }}
