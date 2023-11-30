@@ -1,7 +1,7 @@
 ---
 - name: Verify
   hosts: all
-  gather_facts: false
+  gather_facts: true
   tasks:
     - name: "Test: file /etc/hosts"
       block:
@@ -11,12 +11,16 @@
           register: stat_etc_hosts
 
         - name: "Verify file /etc/hosts"
+          vars:
+            etc_hosts_group:
+              ubuntu: "adm"
+              debian: "root"
           ansible.builtin.assert:
             that:
               - stat_etc_hosts.stat.exists
               - stat_etc_hosts.stat.isreg
               - stat_etc_hosts.stat.pw_name == 'root'
-              - stat_etc_hosts.stat.gr_name == 'root'
+              - stat_etc_hosts.stat.gr_name == etc_hosts_group[(ansible_distribution|lower)]
 
     - name: "Test: ansible user and group"
       block:
@@ -50,10 +54,21 @@
           register: stat_etc_sudoers_d_ansible
           become: true
 
+        - name: "Slurp file /etc/sudoers.d/ansible"
+          ansible.builtin.slurp:
+            src: "/etc/sudoers.d/ansible"
+          register: slurp_etc_sudoers_d_ansible
+          become: true
+
         - name: "Verify file /etc/sudoers.d/ansible"
           ansible.builtin.assert:
             that:
-              - not stat_etc_sudoers_d_ansible.stat.exists
+              - stat_etc_sudoers_d_ansible.stat.exists
+              - stat_etc_sudoers_d_ansible.stat.isreg
+              - stat_etc_sudoers_d_ansible.stat.pw_name == 'root'
+              - stat_etc_sudoers_d_ansible.stat.gr_name == 'root'
+              - stat_etc_sudoers_d_ansible.stat.mode == '0440'
+              - "'ansible ALL=NOPASSWD:SETENV: ALL' in (slurp_etc_sudoers_d_ansible.content|b64decode)"
 
     - name: "Test: ansible authorized_keys"
       block:
@@ -63,7 +78,18 @@
           register: stat_opt_ansible_ssh_authorized_keys
           become: true
 
+        - name: "Slurp file /opt/ansible/.ssh/authorized_keys"
+          ansible.builtin.slurp:
+            src: "/opt/ansible/.ssh/authorized_keys"
+          register: slurp_opt_ansible_ssh_authorized_keys
+          become: true
+
         - name: "Verify file /opt/ansible/.ssh/authorized_keys"
           ansible.builtin.assert:
             that:
-              - not stat_opt_ansible_ssh_authorized_keys.stat.exists
+              - stat_opt_ansible_ssh_authorized_keys.stat.exists
+              - stat_opt_ansible_ssh_authorized_keys.stat.isreg
+              - stat_opt_ansible_ssh_authorized_keys.stat.pw_name == 'ansible'
+              - stat_opt_ansible_ssh_authorized_keys.stat.gr_name == 'ansible'
+              - stat_opt_ansible_ssh_authorized_keys.stat.mode == '0600'
+              - "'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIClfmTk73wNNL2jwvhRUmUuy80JRrz3P7cEgXUqlc5O9 ansible@instance' in (slurp_opt_ansible_ssh_authorized_keys.content|b64decode)"

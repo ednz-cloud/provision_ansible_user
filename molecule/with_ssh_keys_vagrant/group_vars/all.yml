@@ -1,0 +1,12 @@
+---
+provision_ansible_user_name: ansible
+provision_ansible_user_group: ansible
+provision_ansible_user_password: "*"
+provision_ansible_user_is_system: true
+provision_ansible_user_home: /opt/{{ provision_ansible_user_name }}
+provision_ansible_user_shell: /bin/bash
+provision_ansible_user_sudoer: true
+provision_ansible_user_add_ssh_key: true
+provision_ansible_user_ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIClfmTk73wNNL2jwvhRUmUuy80JRrz3P7cEgXUqlc5O9"
+provision_ansible_user_ssh_key_options: ""
+provision_ansible_user_ssh_key_exclusive: true

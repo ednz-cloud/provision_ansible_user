@@ -48,11 +48,13 @@
           ansible.builtin.stat:
             path: "/etc/sudoers.d/ansible"
           register: stat_etc_sudoers_d_ansible
+          become: true
 
         - name: "Slurp file /etc/sudoers.d/ansible"
           ansible.builtin.slurp:
             src: "/etc/sudoers.d/ansible"
           register: slurp_etc_sudoers_d_ansible
+          become: true
 
         - name: "Verify file /etc/sudoers.d/ansible"
           ansible.builtin.assert:
@@ -70,11 +72,13 @@
           ansible.builtin.stat:
             path: "/opt/ansible/.ssh/authorized_keys"
           register: stat_opt_ansible_ssh_authorized_keys
+          become: true
 
         - name: "Slurp file /opt/ansible/.ssh/authorized_keys"
           ansible.builtin.slurp:
             src: "/opt/ansible/.ssh/authorized_keys"
           register: slurp_opt_ansible_ssh_authorized_keys
+          become: true
 
         - name: "Verify file /opt/ansible/.ssh/authorized_keys"
           ansible.builtin.assert:
