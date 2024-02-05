@@ -10,23 +10,23 @@
           ansible.builtin.getent:
             database: passwd
             key: ansible
-          register: ednxzu_ansible_user
+          register: ednz_cloud_ansible_user
 
         - name: "Getent group ansible"
           ansible.builtin.getent:
             database: group
             key: ansible
-          register: ednxzu_ansible_group
+          register: ednz_cloud_ansible_group
 
         - name: "Verify ansible user and group"
           ansible.builtin.assert:
             that:
-              - not ednxzu_ansible_user.failed
-              - not ednxzu_ansible_group.failed
-              - "'ansible' in ednxzu_ansible_user.ansible_facts.getent_passwd.keys()"
-              - "'/opt/ansible' in ednxzu_ansible_user.ansible_facts.getent_passwd['ansible']"
-              - "'/bin/bash' in ednxzu_ansible_user.ansible_facts.getent_passwd['ansible']"
-              - "'ansible' in ednxzu_ansible_group.ansible_facts.getent_group.keys()"
+              - not ednz_cloud_ansible_user.failed
+              - not ednz_cloud_ansible_group.failed
+              - "'ansible' in ednz_cloud_ansible_user.ansible_facts.getent_passwd.keys()"
+              - "'/opt/ansible' in ednz_cloud_ansible_user.ansible_facts.getent_passwd['ansible']"
+              - "'/bin/bash' in ednz_cloud_ansible_user.ansible_facts.getent_passwd['ansible']"
+              - "'ansible' in ednz_cloud_ansible_group.ansible_facts.getent_group.keys()"
 
     - name: "Test: ansible sudo permissions"
       block:

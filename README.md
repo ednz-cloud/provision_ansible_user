@@ -80,7 +80,7 @@ Example Playbook
 # calling the role inside a playbook with either the default or group_vars/host_vars
 - hosts: servers
   roles:
-    - ednxzu.provision_ansible_user
+    - ednz_cloud.provision_ansible_user
 ```
 
 ```yaml
@@ -116,7 +116,7 @@ Example Playbook
 
     - name: "Provision ansible user"
       ansible.builtin.include_role:
-        name: ednxzu.provision_ansible_user
+        name: ednz_cloud.provision_ansible_user
       vars:
         provision_ansible_user_add_ssh_key: true
         provision_ansible_user_ssh_key: "{{ _keypair.public_key }}"

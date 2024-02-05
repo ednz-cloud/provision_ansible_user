@@ -3,6 +3,6 @@
   hosts: all
   become: true
   tasks:
-    - name: "Include ednxzu.provision_ansible_user"
+    - name: "Include ednz_cloud.provision_ansible_user"
       ansible.builtin.include_role:
-        name: "ednxzu.provision_ansible_user"
+        name: "ednz_cloud.provision_ansible_user"
